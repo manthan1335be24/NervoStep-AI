@@ -1,8 +1,8 @@
-NeuroSole AI 👣
+NervoStep AI 👣
 
 Advanced AI-Driven Plantar Pressure Telemetry & Neuropathy Risk Assessment
 
-NeuroSole AI is a clinical-grade diagnostic platform designed to bridge the gap between raw biomechanical sensor data and actionable medical intelligence. By utilizing multimodal deep learning, the platform detects early-stage pressure anomalies to prevent diabetic foot ulcers and neuropathy complications.
+NervoStep AI is a clinical-grade diagnostic platform designed to bridge the gap between raw biomechanical sensor data and actionable medical intelligence. By utilizing multimodal deep learning, the platform detects early-stage pressure anomalies to prevent diabetic foot ulcers and neuropathy complications.
 🏥 Problem Statement
 
 Diabetic Peripheral Neuropathy (DPN) leads to a loss of protective sensation in the feet. Patients often remain unaware of high-pressure hotspots caused by gait imbalances, leading to:
@@ -16,7 +16,7 @@ Diabetic Peripheral Neuropathy (DPN) leads to a loss of protective sensation in 
 Current diagnostic tools are often bulky, expensive, and lack predictive AI capabilities to identify risks before physical symptoms appear.
 💡 Solution Overview
 
-NeuroSole AI provides a preventative "Digital Twin" of foot health. The solution consists of:
+NervoStep AI provides a preventative "Digital Twin" of foot health. The solution consists of:
 
     Multimodal Fusion Engine: A deep learning architecture that integrates ECG-derived autonomic markers with a 3,264-point biomechanical sensor array.
 
@@ -56,8 +56,8 @@ Ensure you have Python 3.9+ installed. It is recommended to use a virtual enviro
 2. Clone the Repository
 Bash
 
-git clone https://github.com/yourusername/neurosole-ai.git
-cd neurosole-ai
+git clone https://github.com/yourusername/NervoStep-ai.git
+cd NervoStep-ai
 
 3. Install Dependencies
 Bash
@@ -73,10 +73,10 @@ streamlit run app.py
 
 Access the production deployment here:
 
-👉 neurosole.vercel.app (or your Streamlit Cloud URL)
+👉 NervoStep.vercel.app (or your Streamlit Cloud URL)
 👨‍💻 Developed By
 
-[Your Name/Team Name] Developing preventative medical technology through Hardware & Machine Learning.
+Team NervoTech Developing preventative medical technology through Hardware & Machine Learning.
 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for detail
