@@ -56,7 +56,7 @@ Ensure you have Python 3.9+ installed. It is recommended to use a virtual enviro
 2. Clone the Repository
 Bash
 
-git clone https://github.com/yourusername/NervoStep-ai.git
+git clone https://github.com/yourusername/NervoStep-AI.git
 cd NervoStep-ai
 
 3. Install Dependencies
