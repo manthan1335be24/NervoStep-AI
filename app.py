@@ -26,7 +26,14 @@ st.markdown("""<style>
 .metric-title { color: #64748b; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
 .metric-value { font-size: 2.2rem; font-weight: 800; color: #0f172a; line-height: 1.2; }
 
-
+/* Visual Container */
+.visual-box { 
+    background-color: #ffffff; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 12px; 
+    padding: 30px; 
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+}
 
 /* Clean up top padding */
 .block-container { padding-top: 2rem; padding-bottom: 2rem; }
@@ -53,30 +60,42 @@ tab1, tab2 = st.tabs(["📊 Diagnostic Scan", "📈 Clinical Trends"])
 
 # --- TAB 1: AI SCAN ---
 with tab1:
-    # Logic Engine
+    # Logic Engine & CSS Animation Generation
     if scenario == "Normal":
         r_text, r_color, high_z, med_z = "Normal", "#10b981", "0", "0"
         region = "Optimal"
         advice = "Pressure distribution is within healthy parameters. Continue routine monitoring."
-        glow_fill = "rgba(59, 130, 246, 0.03)" 
-        h1_r, h2_r, h3_r = 0, 0, 0 
-        hotspot_color = "rgba(0,0,0,0)" 
+        gait_desc = "Smooth, controlled weight transfer. The foot strikes gently at the heel, rolls evenly through the midfoot, and pushes off the toes, distributing pressure optimally."
+        base_color = "rgba(16, 185, 129, 0.05)"
+        anim_css = """
+        @keyframes heelStrike { 0%, 100% { opacity: 0; r: 20px; } 15%, 25% { opacity: 0.6; r: 35px; fill: #10b981; } }
+        @keyframes midStance  { 0%, 100% { opacity: 0; r: 20px; } 45%, 55% { opacity: 0.5; r: 30px; fill: #10b981; } }
+        @keyframes toeOff     { 0%, 100% { opacity: 0; r: 20px; } 75%, 85% { opacity: 0.6; r: 35px; fill: #10b981; } }
+        """
     elif scenario == "Warning":
         r_text, r_color, high_z, med_z = "Warning", "#f59e0b", "0", "2"
         region = "Mid-foot & Heel"
         advice = "Elevated pressure detected. Suggest reviewing footwear and gait mechanics."
-        glow_fill = "rgba(245, 158, 11, 0.08)" 
-        h1_r, h2_r, h3_r = 0, 35, 30 
-        hotspot_color = "#f59e0b"
+        gait_desc = "Altered pressure distribution. The patient exhibits a heavier heel strike and prolonged mid-stance, indicating early signs of compensation or reduced proprioception."
+        base_color = "rgba(245, 158, 11, 0.08)"
+        anim_css = """
+        @keyframes heelStrike { 0%, 100% { opacity: 0; r: 20px; } 10%, 30% { opacity: 0.8; r: 40px; fill: #f59e0b; } }
+        @keyframes midStance  { 0%, 100% { opacity: 0; r: 20px; } 40%, 60% { opacity: 0.7; r: 35px; fill: #f59e0b; } }
+        @keyframes toeOff     { 0%, 100% { opacity: 0; r: 20px; } 75%, 90% { opacity: 0.8; r: 40px; fill: #f59e0b; } }
+        """
     else: # Critical
         r_text, r_color, high_z, med_z = "Critical", "#ef4444", "3", "0"
         region = "Forefoot, Arch & Heel"
         advice = "Critical pressure zones detected. Clinical intervention and orthotic offloading advised immediately."
-        glow_fill = "rgba(239, 68, 68, 0.08)" 
-        h1_r, h2_r, h3_r = 30, 35, 45 
-        hotspot_color = "#ef4444"
+        gait_desc = "Severe neuropathic gait. Characterized by a violent heel strike, loss of the smooth mid-foot roll, and extended, destructive pressure concentrated on the forefoot during push-off."
+        base_color = "rgba(239, 68, 68, 0.08)"
+        anim_css = """
+        @keyframes heelStrike { 0%, 100% { opacity: 0.1; r: 25px; } 5%, 25% { opacity: 0.95; r: 50px; fill: #ef4444; } }
+        @keyframes midStance  { 0%, 100% { opacity: 0; r: 15px; } 50% { opacity: 0.2; r: 20px; fill: #ef4444; } }
+        @keyframes toeOff     { 0%, 100% { opacity: 0.1; r: 25px; } 60%, 95% { opacity: 0.95; r: 55px; fill: #ef4444; } }
+        """
 
-    # Metric Cards HTML (Completely left-aligned to fix the ghost box)
+    # Metric Cards HTML
     st.markdown(f"""<div class="metric-container">
 <div class="metric-card"><div class="metric-title" style="color:{r_color}">Current Risk Level</div><div class="metric-value" style="color:{r_color}">{r_text}</div></div>
 <div class="metric-card"><div class="metric-title">High-Risk Zones</div><div class="metric-value">{high_z}</div></div>
@@ -88,30 +107,31 @@ with tab1:
     v_col1, v_col2 = st.columns([1, 2])
     
     with v_col1:
-        st.markdown("<h4 style='color:#0f172a; margin-bottom:20px; font-weight:800; text-align:center;'>Sole Heatmap</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='color:#0f172a; margin-bottom:20px; font-weight:800; text-align:center;'>Dynamic Gait Simulation</h4>", unsafe_allow_html=True)
         
-        svg_code = f"""<svg viewBox="0 0 320 550" style="width:100%; max-width:220px; display:block; margin:auto; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));">
+        # ANIMATED SVG CODE
+        animated_svg = f"""<style>
+{anim_css}
+.gait-heel {{ animation: heelStrike 2s infinite cubic-bezier(0.4, 0, 0.2, 1); }}
+.gait-mid {{ animation: midStance 2s infinite cubic-bezier(0.4, 0, 0.2, 1); }}
+.gait-toe {{ animation: toeOff 2s infinite cubic-bezier(0.4, 0, 0.2, 1); }}
+</style>
+<svg viewBox="0 0 320 550" style="width:100%; max-width:220px; display:block; margin:auto; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.05));">
 <defs>
-<radialGradient id="heat" cx="50%" cy="50%" r="50%">
-<stop offset="0%" stop-color="{hotspot_color}" stop-opacity="0.85" />
-<stop offset="100%" stop-color="{hotspot_color}" stop-opacity="0" />
-</radialGradient>
-<filter id="glow">
-<feGaussianBlur stdDeviation="6" result="coloredBlur"/>
-<feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-</filter>
+<filter id="glow"><feGaussianBlur stdDeviation="8" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
-<path d="M 80,140 C 80,240 60,340 80,440 C 100,520 190,530 210,470 C 235,400 200,320 230,240 C 260,160 290,165 290,140 C 290,110 120,110 80,140 Z" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2" />
-<ellipse cx="110" cy="80" rx="28" ry="38" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2"/>
-<ellipse cx="175" cy="65" rx="20" ry="32" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2"/>
-<ellipse cx="225" cy="80" rx="16" ry="26" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2"/>
-<ellipse cx="260" cy="105" rx="14" ry="20" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2"/>
-<ellipse cx="285" cy="135" rx="11" ry="16" fill="{glow_fill}" stroke="#cbd5e1" stroke-width="2"/>
-<circle cx="110" cy="150" r="{h1_r}" fill="url(#heat)" filter="url(#glow)"/>
-<circle cx="150" cy="300" r="{h2_r}" fill="url(#heat)" filter="url(#glow)"/>
-<circle cx="150" cy="460" r="{h3_r}" fill="url(#heat)" filter="url(#glow)"/>
+<path d="M 80,140 C 80,240 60,340 80,440 C 100,520 190,530 210,470 C 235,400 200,320 230,240 C 260,160 290,165 290,140 C 290,110 120,110 80,140 Z" fill="{base_color}" stroke="#cbd5e1" stroke-width="2" />
+<ellipse cx="110" cy="80" rx="28" ry="38" fill="{base_color}" stroke="#cbd5e1" stroke-width="2"/>
+<ellipse cx="175" cy="65" rx="20" ry="32" fill="{base_color}" stroke="#cbd5e1" stroke-width="2"/>
+<ellipse cx="225" cy="80" rx="16" ry="26" fill="{base_color}" stroke="#cbd5e1" stroke-width="2"/>
+<ellipse cx="260" cy="105" rx="14" ry="20" fill="{base_color}" stroke="#cbd5e1" stroke-width="2"/>
+<ellipse cx="285" cy="135" rx="11" ry="16" fill="{base_color}" stroke="#cbd5e1" stroke-width="2"/>
+<circle cx="150" cy="460" class="gait-heel" filter="url(#glow)"/>
+<circle cx="150" cy="300" class="gait-mid" filter="url(#glow)"/>
+<circle cx="110" cy="160" class="gait-toe" filter="url(#glow)"/>
+<circle cx="180" cy="165" class="gait-toe" filter="url(#glow)"/>
 </svg>"""
-        st.markdown(svg_code, unsafe_allow_html=True)
+        st.markdown(animated_svg, unsafe_allow_html=True)
 
     with v_col2:
         report_html = f"""<div style="padding: 10px 30px; height: 100%; display: flex; flex-direction: column; justify-content: center;">
@@ -120,8 +140,12 @@ with tab1:
 <p style="font-size:1rem; margin-bottom:8px; color:#0f172a;"><strong style="color:#64748b;">System Status:</strong> <span style="color:{r_color}; font-weight:700;">{r_text}</span></p>
 <p style="font-size:1rem; margin-bottom:0px; color:#0f172a;"><strong style="color:#64748b;">Primary Affection:</strong> <span style="font-weight:600;">{region}</span></p>
 </div>
+
+<h6 style="color:#0f172a; font-size:1rem; font-weight:700; margin-bottom:8px; margin-top:20px;">Biomechanical Gait Analysis</h6>
+<p style="color:#475569; font-size:0.95rem; font-weight:500; line-height:1.6; margin-bottom:20px; background-color:#f1f5f9; padding:12px; border-radius:6px;">{gait_desc}</p>
+
 <h6 style="color:#0f172a; font-size:1rem; font-weight:700; margin-bottom:10px;">Recommended Clinical Actions</h6>
-<ul style="color:#475569; font-size:1rem; font-weight:500; line-height:1.6; padding-left:20px;">
+<ul style="color:#475569; font-size:0.95rem; font-weight:500; line-height:1.6; padding-left:20px;">
 <li>{advice}</li>
 <li>{'Continuous telemetry logged for 24h.' if scenario != 'Normal' else 'No immediate intervention required.'}</li>
 </ul>
